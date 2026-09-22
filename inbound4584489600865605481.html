@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagutin Mo 'To 💙</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+font-family:Arial,sans-serif;background:linear-gradient(135deg,#dff5ff,#fff);overflow:hidden}
+.card{width:min(92%,430px);min-height:520px;background:#fff;border-radius:28px;
+box-shadow:0 10px 35px #75b9d655;text-align:center;padding:35px 22px;position:relative;overflow:hidden}
+.cinna{font-size:78px;margin:8px 0}
+h1{color:#4c9dcc;font-size:28px;margin:8px 0 18px}
+.question{font-size:21px;color:#555;font-weight:bold;min-height:65px}
+.buttons{position:relative;height:190px;margin-top:20px}
+button{border:0;border-radius:18px;padding:14px 26px;font-size:18px;font-weight:bold;
+cursor:pointer;position:absolute;background:#eef8fc;color:#4b7890}
+#yes{left:18%}#no{left:55%}
+#msg{display:none;color:#555;font-size:19px;line-height:1.5}
+.next{position:static!important;margin-top:18px}
+.small{font-size:12px;color:#9bb4c0}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="cinna">☁️🐶</div>
+<h1 id="title">Sagutin Mo 'To 💙</h1>
+<div class="question" id="question">Mahal mo ba ako?</div>
+
+<div class="buttons" id="buttons">
+<button id="yes">Oo</button>
+<button id="no">Hindi</button>
+</div>
+
+<div id="msg"></div>
+
+</div>
+
+<script>
+const yes=document.getElementById("yes");
+const no=document.getElementById("no");
+const buttons=document.getElementById("buttons");
+const question=document.getElementById("question");
+const msg=document.getElementById("msg");
+const title=document.getElementById("title");
+
+function move(btn){
+  const maxX=Math.max(0,buttons.clientWidth-btn.offsetWidth);
+  const maxY=Math.max(0,buttons.clientHeight-btn.offsetHeight);
+  btn.style.left=Math.random()*maxX+"px";
+  btn.style.top=Math.random()*maxY+"px";
+}
+
+function resetButtons(){
+  buttons.innerHTML=`<button id="yes">Oo</button><button id="no">Hindi</button>`;
+  bindFirst();
+}
+function bindFirst(){
+  const y=document.getElementById("yes"), n=document.getElementById("no");
+  y.addEventListener("mouseenter",()=>move(y));
+  y.addEventListener("touchstart",e=>{e.preventDefault();move(y)});
+  y.addEventListener("click",e=>{e.preventDefault();move(y)});
+  n.addEventListener("click",sureQuestion);
+}
+
+function sureQuestion(){
+  title.textContent="Sagutin Mo 'To 💙";
+  question.textContent="Sure ka, di mo ko love?";
+  buttons.innerHTML=`<button id="correctAns">Opo, sure ako di kita love</button><button id="wrongAns">Love po kita talaga 💙</button>`;
+
+  const correct=document.getElementById("correctAns");
+  const wrong=document.getElementById("wrongAns");
+
+  // Keep both answers looking normal at first.
+  correct.style.position="absolute";
+  correct.style.left="4%";
+  correct.style.top="55px";
+  wrong.style.position="absolute";
+  wrong.style.left="50%";
+  wrong.style.top="55px";
+  correct.style.zIndex="2";
+  wrong.style.zIndex="3";
+
+  let clicks=0;
+
+  // Clicking the WRONG answer makes the CORRECT answer grow.
+  wrong.addEventListener("click",()=>{
+    clicks++;
+    const scale=1 + clicks*0.18;
+    correct.style.transform=`scale(${scale})`;
+    correct.style.transformOrigin="center center";
+    correct.style.zIndex="4";
+
+    if(clicks>=10){
+      setTimeout(showFinal,500);
+    }
+  });
+
+  // Correct answer can also proceed normally.
+  correct.addEventListener("click",showFinal);
+}
+
+function showFinal(){
+  buttons.style.display="none";
+  question.textContent="";
+  msg.style.display="block";
+  msg.innerHTML=`Okay lang, di naman masakit eh... 🥹<br><button class="next" onclick="nextPage()">Next ➜</button>`;
+}
+
+function nextPage(){
+  title.textContent="Sagutin Mo 'To 💙";
+  question.textContent="May feelings ka pa ba sa akin?";
+  msg.style.display="none";
+  buttons.style.display="block";
+  buttons.innerHTML=`<button id="yes">Meron</button><button id="no">Wala</button>`;
+  bindGeneric();
+}
+function bindGeneric(){
+  const y=document.getElementById("yes"), n=document.getElementById("no");
+
+  // "Meron" is the wrong answer and cannot be clicked.
+  y.addEventListener("mouseenter",()=>{
+    y.style.position="relative";
+    y.style.left=(Math.random()*120-60)+"px";
+    y.style.top=(Math.random()*80-40)+"px";
+  });
+  y.addEventListener("touchstart",(e)=>{
+    e.preventDefault();
+    y.style.position="relative";
+    y.style.left=(Math.random()*120-60)+"px";
+    y.style.top=(Math.random()*80-40)+"px";
+  },{passive:false});
+
+  // Clicking "Wala" gives the requested ending.
+  n.addEventListener("click",()=>{
+    buttons.style.display="none";
+    question.textContent="Edi wala. Sakit mo pala. 😕";
+    msg.style.display="none";
+    msg.innerHTML="";
+  });
+}
+bindFirst();
+</script>
+</body>
+</html>
